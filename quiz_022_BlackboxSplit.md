@@ -12,4 +12,4 @@ def BlackBox(input:str):
     return out
 ```
 
-![]()
+![](image.quiz_022.png)
