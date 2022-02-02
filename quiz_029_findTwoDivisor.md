@@ -34,6 +34,6 @@ answer = quiz_29(number=1000)
 print(answer.solve())
 ```
 
-![]()
+![](image.quiz_029.2.png)
 
 ![](image.quiz_029.png)
