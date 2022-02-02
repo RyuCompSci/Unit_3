@@ -8,4 +8,4 @@ def modifier(N, word):
         f.close()
 ```
 
-![]()
+![](image.quiz_028.png)
