@@ -35,3 +35,5 @@ print(answer.solve())
 ```
 
 ![]()
+
+![](image.quiz_029.png)
