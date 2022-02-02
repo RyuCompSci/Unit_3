@@ -8,4 +8,4 @@ def generator(N, word):
         f.close()
 ```
 
-![]()
+![](image.quiz_027.png)
