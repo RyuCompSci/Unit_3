@@ -12,4 +12,4 @@ def bracketEmoji(inp1, inp2):
     return answer
 ```
 
-![]()
+![](image.quiz_021.png)
