@@ -9,4 +9,4 @@ def ascii(inp):
     return answer
 ```
 
-![]()
+![](image.quiz_024.png)
