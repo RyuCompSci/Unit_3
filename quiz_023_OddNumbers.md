@@ -18,4 +18,4 @@ def odd_numbers(A, B):
     return answer
 ```
 
-![]()
+![](image.quiz_023.png)
