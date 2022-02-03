@@ -9,3 +9,4 @@ def generator(N, word):
 ```
 
 ![](image.quiz_027.png)
+![](quiz26-28_system_diagram.png)
