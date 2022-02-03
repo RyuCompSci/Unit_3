@@ -9,3 +9,4 @@ def modifier(N, word):
 ```
 
 ![](image.quiz_028.png)
+![](quiz26-28_system_diagram.png)
