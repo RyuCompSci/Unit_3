@@ -18,3 +18,4 @@ print(f"Your tries are {y} times total")
 ```
 
 ![](image.quiz_026.png)
+![](quiz26-28_system_diagram.png)
