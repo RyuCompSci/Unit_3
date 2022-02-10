@@ -26,3 +26,5 @@ class broken_quiz:
                 bottom_indx -= 1
         return solution
 ```
+
+![](image_quiz_030.png)
