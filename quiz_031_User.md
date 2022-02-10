@@ -19,4 +19,4 @@ class User:
         return my_user.username + my_user.information
 ```
 
-![]()
+![](image_quiz_031.png)
