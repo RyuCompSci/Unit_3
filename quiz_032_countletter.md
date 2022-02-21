@@ -26,4 +26,4 @@ Inherit = inheritance(text="The world is vase, vast", letter="a")
 print(Inherit.NumberOfLetters())
 ```
 
-![]()
+![](image_quiz_032.png)
