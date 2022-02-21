@@ -63,4 +63,4 @@ my_tesla.battery.charge_bat(50)  # here using the method form the battery
 print(my_tesla.battery.get_charge())
 ```
 
-![]()
+![](image_quiz_033.png)
