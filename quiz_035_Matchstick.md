@@ -17,4 +17,4 @@ class Matchstick:
         return num
 ```
 
-![]()
+![](image_quiz_035.png)
