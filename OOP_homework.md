@@ -130,3 +130,5 @@ sleep.value.temperature()
 ```
 
 ![](OOP.png)
+
+![](OOP_homework.jpg)
