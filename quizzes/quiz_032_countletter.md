@@ -8,6 +8,7 @@ class Countletter:
         self.letter = letter
 
     def NumberOfLetters(self):
+    """Counts the letters that matches with the text"""
         x = 0
         for i in range(len(self.text)):
             if self.letter == self.text[i]:
