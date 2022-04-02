@@ -12,4 +12,4 @@ INSERT INTO Electrical_cars (model, brand, maker, battery_size) values ("Taycan 
 SELECT * from Electrical_cars
 ```
 
-![]()
+![](image_quiz_039.png)
