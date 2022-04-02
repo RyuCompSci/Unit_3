@@ -13,4 +13,4 @@ INSERT INTO Movies (name, year, budget, category, director, producer) values ('T
 SELECT * from Movies
 ```
 
-![]()
+![](image_quiz_038.png)
