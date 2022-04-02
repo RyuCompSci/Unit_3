@@ -38,4 +38,4 @@ class Hexagon(Polygon):
         return f"The area of your hexagon is {area}."
 ```
 
-![]()
+![](image_quiz_034.png)
