@@ -11,4 +11,4 @@ def mapper(n: int):
     return out
 ```
 
-![]()
+![](image_quiz_042.png)
