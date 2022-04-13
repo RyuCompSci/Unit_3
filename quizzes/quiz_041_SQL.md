@@ -18,5 +18,5 @@ CREATE TABLE  client (
 );
 ```
 
-![]()
+![](image_quiz_040.png)
 ![]()
