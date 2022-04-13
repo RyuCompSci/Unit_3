@@ -1,6 +1,7 @@
 ### SQL
 
 ```.py
+# makes a table and columns on it
 CREATE TABLE  orders (
     date INTEGER,
     paper_type VARCHAR(100),
@@ -19,4 +20,5 @@ CREATE TABLE  client (
 ```
 
 ![](image_quiz_040.png)
+
 ![](ER_diagram_for_quiz_41.drawio.png)
