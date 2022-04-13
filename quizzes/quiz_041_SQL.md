@@ -19,4 +19,4 @@ CREATE TABLE  client (
 ```
 
 ![](image_quiz_040.png)
-![]()
+![](ER_diagram_for_quiz_41.drawio.png)
