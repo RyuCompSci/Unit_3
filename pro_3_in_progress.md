@@ -5,10 +5,9 @@ from kivy.lang import Builder
 from kivy.metrics import dp
 
 from kivymd.app import MDApp
-from kivymd.uix.datatables import MDDataTable
-from kivy.core.window.window_sdl2 import WindowSDL
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.pickers import MDDatePicker
+from kivy.clock import Clock
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -16,7 +15,7 @@ from sqlalchemy.schema import Column
 from sqlalchemy.types import Integer, String
 from passlib.context import CryptContext
 
-db_engine = create_engine = create_engine("sqlite:///stop&clean.db")
+db_engine = create_engine("sqlite:///stop&clean.db")
 Base = declarative_base()
 
 
@@ -130,6 +129,9 @@ class MainScreen(MDScreen):
 
 
 class NewItemScreen(MDScreen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+
     def on_save(self, instance, value, date_range):
         self.ids.date_label.text = str(value)
 
@@ -154,32 +156,57 @@ class NewItemScreen(MDScreen):
 
 
 class TableScreen(MDScreen):
-    def on_pre_enter(self, *args):
-        db = Stop_and_clean_database("stop&clean.db")
-        data = session.query(Stop_and_clean_database).all()
-        session.commit()
+    def go_search(self):
+        a = str(session.query(Stop_and_clean_database.stop_clean_id).filter(
+            Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+            self.ids.time_search.text).first())
+        b = str(session.query(Stop_and_clean_database.date).filter(
+                Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+                self.ids.time_search.text).first())[1:-2]
+        c = str(session.query(Stop_and_clean_database.person_on_duty).filter(
+                Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+                self.ids.time_search.text).first())[1:-2]
+        d = str(session.query(Stop_and_clean_database.duration).filter(
+                Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+                self.ids.time_search.text).first())[1:-2]
+        e = str(session.query(Stop_and_clean_database.task).filter(
+                Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+                self.ids.time_search.text).first())[1:-2]
+        f = str(session.query(Stop_and_clean_database.feedback).filter(
+                Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+                self.ids.time_search.text).first())[1:-2]
+        g = str(session.query(Stop_and_clean_database.rating).filter(
+                Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+                self.ids.time_search.text).first())[1:-2]
+        h = str(session.query(Stop_and_clean_database.start_time).filter(
+                Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+                self.ids.time_search.text).first())[1:-2]
+        i = str(session.query(Stop_and_clean_database.tool).filter(
+                Stop_and_clean_database.date == self.ids.date_search.text, Stop_and_clean_database.start_time ==
+                self.ids.time_search.text).first())[1:-2]
+        if a == None:
+            self.ids.stop_and_clean_id_label.text = "None"
+            self.ids.date_label.text = "None"
+            self.ids.person_on_duty_label.text = "None"
+            self.ids.duration_label.text = "None"
+            self.ids.task_label.text = "None"
+            self.ids.feedback_label.text = "None"
+            self.ids.rating_label.text = "None"
+            self.ids.start_time_label.text = "None"
+            self.ids.tool_label.text = "None"
+        else:
+            self.ids.stop_and_clean_id_label.text = a[1:-2]
+            self.ids.date_label.text = b
+            self.ids.person_on_duty_label.text = c
+            self.ids.duration_label.text = d
+            self.ids.task_label.text = e
+            self.ids.feedback_label.text = f
+            self.ids.rating_label.text = g
+            self.ids.start_time_label.text = h
+            self.ids.tool_label.text = i
 
-        # The MDtable needs at least two values as input
-        if len(data) < 2:
-            data.append(["", "", "", "", "", "", "", ""])
-
-        self.data_tables = MDDataTable(
-            size_hint=(0.8, 0.5),
-            pos_hint={"center_x": 0.5, "top": 0.8},
-            column_data=[
-                ("stop_and_clean_id", 80),
-                ("person_on_duty", 80),
-                ("duration", 80),
-                ("task", 80),
-                ("feedback", 80),
-                ("rating", 80),
-                ("start_time", 80),
-                ("tool", 80)
-            ],
-            row_data=data
-        )
-        # add the function to detect when a check in a row is pressed
-        self.add_widget(self.data_tables)
+    def back_main_2(self):
+        self.parent.current = "MainScreen"
 
 
 m = stop_clean()
@@ -358,17 +385,276 @@ ScreenManager:
 
 
 <TableScreen>:
-    MDLabel:
-        text: "You can click on the checkbox next to the row, the values will be loaded into the boxes below and then you can save"
-        font_size: 30
-        pos_hint : {"top":1, "center_x":0.5}
-        size_hint: 0.7, 0.3
+    FitImage:
+        source: "cleaning_image.webp"
 
-    MDLabel:
-        text: "Edit entry"
-        font_size: 30
-        pos_hint : {"top":0.3, "center_x":0.2}
-        size_hint: 0.3, 0.3
+    MDCard:
+        size_hint: 1, 1
+        md_bg_color: .6, .8, .2, .5
+
+    MDBoxLayout:
+        size_hint: 1, 1
+        orientation: "vertical"
+
+        MDLabel:
+            text: "Search the past stop&clean record"
+            halign: "center"
+            font_size: 30
+            pos_hint : {"top":1, "center_x":0.5}
+            size_hint: 0.7, 0.2
+
+        MDBoxLayout:
+            orientation: "vertical"
+            size_hint: 1, .8
+
+            MDLabel:
+                size_hint: 1, .175
+
+            MDBoxLayout:
+                orientation: "horizontal"
+                size_hint: 1, .1
+
+                MDLabel:
+                    size_hint: .1, 1
+
+                MDTextField:
+                    id: date_search
+                    hint_text: "date"
+                    color_mode: 'custom'
+                    line_color_focus: 1, 1, 1, 1
+                    mode: "rectangle"
+                    size_hint: .25, 1
+
+                MDLabel:
+                    size_hint: .1, 1
+
+                MDTextField:
+                    id: time_search
+                    hint_text: "start_time"
+                    color_mode: 'custom'
+                    line_color_focus: 1, 1, 1, 1
+                    mode: "rectangle"
+                    size_hint: .25, 1
+
+                MDLabel:
+                    size_hint: .1, 1
+
+                MDRaisedButton:
+                    id: go_search
+                    text: "Search"
+                    on_release:
+                        root.go_search()
+                    size_hint: .1, 1
+                    font_size: "20px"
+
+                MDLabel:
+                    size_hint: .1, 1
+
+            MDLabel:
+                size_hint: 1, .075
+
+            MDBoxLayout:
+                size_hint: 1, .1
+                orientation: "horizontal"
+
+                MDLabel:
+                    size_hint: .05, 1
+                    color: .6, .3, .3, 1
+
+                MDLabel:
+                    size_hint: .1, 1
+                    color: .6, .3, .3, 1
+
+                MDLabel:
+                    id: stop_and_clean_id_label
+                    text: "id"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: date_label
+                    text: "date"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: person_on_duty_label
+                    text: "person on duty"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: duration_label
+                    text: "duration"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: task_label
+                    text: "task"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: feedback_label
+                    text: "feedback"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: rating_label
+                    text: "rating"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: start_time_label
+                    text: "start time"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: tool_label
+                    text: "tools"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    size_hint: .05, 1
+                    color: .6, .3, .3, 1
+
+            MDBoxLayout:
+                size_hint: 1, .1
+                orientation: "horizontal"
+
+                MDLabel:
+                    size_hint: .05, 1
+                    color: .6, .3, .3, 1
+
+                MDLabel:
+                    text: "Search Result"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    color: .6, .3, .3, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: stop_and_clean_id_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: date_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: person_on_duty_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: duration_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: task_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: feedback_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: rating_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: start_time_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    id: tool_label
+                    text: "?"
+                    halign: "center"
+                    font_size: 10
+                    size_hint: .1, 1
+                    line_color: 0.2, 0.2, 0.2, 0.8
+
+                MDLabel:
+                    size_hint: .05, 1
+                    color: .6, .3, .3, 1
+
+            MDLabel:
+                size_hint: 1, .1
+
+            MDBoxLayout:
+                size_hint: 1, .05
+
+                MDLabel:
+                    size_hint: .7, 1
+
+                MDRaisedButton:
+                    text: "Back"
+                    on_release:
+                        root.back_main_2()
+                    size_hint: .1, 1
+                    font_size: "10px"
+
+                MDLabel:
+                    size_hint: .2, 1
+
+            MDLabel:
+                size_hint: 1, .1
+
 
 
 <RegisterScreen>:
@@ -433,205 +719,176 @@ ScreenManager:
 
 
 <NewItemScreen>:
-    MDCard:
-        size_hint: 1, .2
-        md_bg_color: .5, .1, .3, .3
-        pos_hint: {'center_y': .9}
+    FitImage:
+        source: "desert_sand_image.jpeg"
 
     MDCard:
-        size_hint: 1, .2
-        md_bg_color: .5, .1, .3, .3
-        pos_hint: {'center_y': .78}
+        size_hint: 1, 1
+        md_bg_color: .8, .8, .8, .6
 
     MDCard:
-        size_hint: 1, .2
-        md_bg_color: .5, .1, .3, .3
-        pos_hint: {'center_y': .66}
-
-    MDCard:
-        size_hint: 1, .2
-        md_bg_color: .5, .1, .3, .3
-        pos_hint: {'center_y': .54}
-
-    MDCard:
-        size_hint: 1, .2
-        md_bg_color: .5, .1, .3, .3
-        pos_hint: {'center_y': .42}
-
-    MDCard:
-        size_hint: 1, .2
-        md_bg_color: .5, .1, .3, .3
-        pos_hint: {'center_y': .3}
-
-    MDCard:
-        size_hint: 1, .2
-        md_bg_color: .5, .1, .3, .3
-        pos_hint: {'center_y': .18}
-
-    MDCard:
-        size_hint: 1, .2
-        md_bg_color: .5, .1, .3, .3
-        pos_hint: {'center_y': .06}
-
-
+        size_hint: .2, 1
+        pos_hint: {'center_x': .9, 'center_y': .5}
+        md_bg_color: .2, .5, .4, .6
 
     MDBoxLayout:
-        size_hint: 1, 0.2
+        size_hint: .8, 1
         orientation: "horizontal"
-        pos_hint: {'center_y': .91}
 
         MDLabel:
-            id: date_label
-            text: "Date"
-            size_hint: .1, .5
+            size_hint: .1, 1
 
-        MDRaisedButton:
-            text: "Calendar"
-            pos_hint: {'center_x': .75}
-            on_release:
-                root.show_date_picker()
+        MDBoxLayout:
+            size_hint: 1, 1
+            orientation: "vertical"
+
+            MDBoxLayout:
+                size_hint: 1, 0.1
+                orientation: "horizontal"
+
+                MDLabel:
+                    id: date_label
+                    text: "Date"
+                    size_hint: .1, .5
+
+                MDRaisedButton:
+                    text: "Calendar"
+                    pos_hint: {'center_x': .75}
+                    on_release:
+                        root.show_date_picker()
+
+
+            MDBoxLayout:
+                size_hint: 1, 0.1
+                orientation: "horizontal"
+
+                MDLabel:
+                    text: "Person on duty"
+                    size_hint: .5, .5
+
+                MDTextFieldRect:
+                    id: person_duty
+                    size_hint: .4, .5
+                    pos_hint: {'center_x': .9}
 
 
 
-    MDBoxLayout:
-        size_hint: 1, 0.2
-        orientation: "horizontal"
-        pos_hint: {'center_y': .79}
+            MDBoxLayout:
+                size_hint: 1, 0.1
+                orientation: "horizontal"
+
+                MDLabel:
+                    text: "Duration"
+                    size_hint: .5, .5
+
+                MDSlider:
+                    id: duration
+                    min: 0
+                    max: 180
+                    value: 30
+                    hint: True
+                    size_hint: .3, .5
+                    pos_hint: {'center_x': .9}
+
+
+
+            MDBoxLayout:
+                size_hint: 1, 0.1
+                orientation: "horizontal"
+
+                MDLabel:
+                    text: "Task"
+                    size_hint: .5, .5
+
+                MDTextFieldRect:
+                    id: task
+                    mode: "rectangle"
+                    size_hint: .4, .5
+                    pos_hint: {'center_x': .9}
+
+
+
+            MDBoxLayout:
+                size_hint: 1, 0.1
+                orientation: "horizontal"
+
+                MDLabel:
+                    text: "Feedback from teachers"
+                    size_hint: .5, .5
+
+                MDTextFieldRect:
+                    id: feedback
+                    mode: "rectangle"
+                    size_hint: .4, .5
+                    pos_hint: {'center_x': .9}
+
+
+
+            MDBoxLayout:
+                size_hint: 1, 0.1
+                orientation: "horizontal"
+
+                MDLabel:
+                    text: "Rating on the stop&clean"
+                    size_hint: .5, .5
+
+                MDSlider:
+                    id: rating
+                    min: 0
+                    max: 10
+                    value: 5
+                    hint: True
+                    size_hint: .3, .5
+                    pos_hint: {'center_x': .9}
+
+
+
+            MDBoxLayout:
+                size_hint: 1, 0.1
+                orientation: "horizontal"
+
+                MDLabel:
+                    text: "Time you started cleaning"
+                    size_hint: .5, .5
+
+                MDTextFieldRect:
+                    id: start_time
+                    mode: "rectangle"
+                    size_hint: .4, .5
+                    pos_hint: {'center_x': .9}
+
+
+            MDBoxLayout:
+                size_hint: 1, 0.1
+                orientation: "horizontal"
+
+                MDLabel:
+                    text: "Tools"
+                    size_hint: .5, .5
+
+                MDTextFieldRect:
+                    id: tool
+                    mode: "rectangle"
+                    size_hint: .4, .5
+                    pos_hint: {'center_x': .9}
+
+            MDLabel:
+                size_hint: 1, .05
 
         MDLabel:
-            text: "Person on duty"
-            size_hint: .5, .5
-
-        MDTextField:
-            id: person_duty
-            hint_text: "Person on duty"
-            mode: "rectangle"
-            size_hint: .4, .35
-            pos_hint: {'center_x': .9}
-
-
-
-    MDBoxLayout:
-        size_hint: 1, 0.2
-        orientation: "horizontal"
-        pos_hint: {'center_y': .66}
-
-        MDLabel:
-            text: "Duration"
-            size_hint: .5, .5
-
-        MDSlider:
-            id: duration
-            min: 0
-            max: 180
-            value: 30
-            hint: True
-            size_hint: .3, .5
-            pos_hint: {'center_x': .9}
-
-
-
-    MDBoxLayout:
-        size_hint: 1, 0.2
-        orientation: "horizontal"
-        pos_hint: {'center_y': .55}
-
-        MDLabel:
-            text: "Task"
-            size_hint: .5, .5
-
-        MDTextField:
-            id: task
-            hint_text: "Task"
-            mode: "rectangle"
-            size_hint: .4, .35
-            pos_hint: {'center_x': .9}
-
-
-
-    MDBoxLayout:
-        size_hint: 1, 0.2
-        orientation: "horizontal"
-        pos_hint: {'center_y': .43}
-
-        MDLabel:
-            text: "Feedback from teachers"
-            size_hint: .5, .5
-
-        MDTextField:
-            id: feedback
-            hint_text: "Feedback"
-            mode: "rectangle"
-            size_hint: .4, .35
-            pos_hint: {'center_x': .9}
-
-
-
-    MDBoxLayout:
-        size_hint: 1, 0.2
-        orientation: "horizontal"
-        pos_hint: {'center_y': .3}
-
-        MDLabel:
-            text: "Rating on the stop&clean"
-            size_hint: .5, .5
-
-        MDSlider:
-            id: rating
-            min: 0
-            max: 10
-            value: 5
-            hint: True
-            size_hint: .3, .5
-            pos_hint: {'center_x': .9}
-
-
-
-    MDBoxLayout:
-        size_hint: 1, 0.2
-        orientation: "horizontal"
-        pos_hint: {'center_y': 19}
-
-        MDLabel:
-            text: "Time you started cleaning"
-            size_hint: .5, .5
-
-        MDTextField:
-            id: start_time
-            hint_text: "Time you started"
-            mode: "rectangle"
-            size_hint: .4, .35
-            pos_hint: {'center_x': .9}
-
-
-
-    MDBoxLayout:
-        size_hint: 1, 0.2
-        orientation: "horizontal"
-        pos_hint: {'center_y': .19}
-
-        MDLabel:
-            text: "Tools"
-            size_hint: .5, .5
-
-        MDTextField:
-            id: tool
-            hint_text: "tool"
-            mode: "rectangle"
-            size_hint: .4, .35
-            pos_hint: {'center_x': .9}
+            size_hint: .1, 1
 
     MDRaisedButton:
         id: enter_item
         text: "Save"
-        pos_hint: {'center_x': .9, 'center_y': .04}
+        pos_hint: {'center_x': .9, 'center_y': .5}
         on_release:
             root.enter_item()
 
     MDRaisedButton:
         id: back_main
         text: "Back"
-        pos_hint: {'center_x': .7, 'center_y': .04}
+        pos_hint: {'center_x': .9, 'center_y': .4}
         on_release:
             root.back_main()
 ```
