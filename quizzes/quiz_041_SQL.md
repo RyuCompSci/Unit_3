@@ -19,6 +19,8 @@ CREATE TABLE  client (
 );
 ```
 
-![](image_quiz_040.png)
+![](image_quiz_41_1.png)
+
+![](image_quiz_41_2.png)
 
 ![](ER_diagram_for_quiz_41.drawio.png)
