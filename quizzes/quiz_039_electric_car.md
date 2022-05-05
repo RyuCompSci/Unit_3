@@ -33,4 +33,4 @@ Quiz_039.create_table()
 Quiz_039.add_data()
 ```
 
-![]()
+![](re_image_quiz_039.png)
