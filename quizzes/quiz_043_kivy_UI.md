@@ -123,6 +123,10 @@ ScreenManager:
         pos_hint: {"center_x":.5, "center_y":.2}
 ```
 
-![](image_quiz_043.mov)
+
+
+https://user-images.githubusercontent.com/89348765/166895911-8f747f98-2f1f-44cd-bbe4-8b4c564c6048.mov
+
+
 
 
