@@ -8,4 +8,4 @@ def fix23(lst):
     return lst
 ```
 
-![](image_quiz_40.png)
+![](quiz_40.drawio.png)
